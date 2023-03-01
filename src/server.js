@@ -6,6 +6,8 @@ import authorsRouter from "./api/authors/index.js";
 const server = Express();
 const port = 3001;
 
+// ******************************MIDDLEWARES***************************
+
 server.use(Express.json()); // If you don't add this line BEFORE the endpoints all request bodies will be UNDEFINED!!!!!!!!!!!!!!!
 
 // ************************** ENDPOINTS ***********************
