@@ -33,7 +33,7 @@ blogPostsRouter.post("/", (req, res, next) => {
       ...req.body,
       author: {
         ...req.body.author,
-        avatar: `https://ui-avatars.com/api/?name=${req.body.name}`,
+        avatar: `https://ui-avatars.com/api/?name=${req.body.author.name}`,
       },
       createdAt: new Date(),
       updatedAt: new Date(),

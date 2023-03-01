@@ -1,1 +1,36 @@
-[{"category":"crime","title":"Criminal Minds","cover":"ARTICLE COVER (IMAGE LINK)","readTime":{"value":4,"unit":"minute"},"author":{"name":"John Doe","avatar":"https://ui-avatars.com/api/?name=undefined"},"content":"HTML","createdAt":"2023-03-01T15:59:04.429Z","updatedAt":"2023-03-01T15:59:04.429Z","id":"73yt1zb6clepv4s8e"}]
+[
+    {
+        "category": "crime",
+        "title": "Criminal Minds",
+        "cover": "ARTICLE COVER (IMAGE LINK)",
+        "readTime": {
+            "value": 4,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "John Doe",
+            "avatar": "https://ui-avatars.com/api/?name=undefined"
+        },
+        "content": "HTML",
+        "createdAt": "2023-03-01T15:59:04.429Z",
+        "updatedAt": "2023-03-01T15:59:04.429Z",
+        "id": "73yt1zb6clepv4s8e"
+    },
+    {
+        "category": "romance",
+        "title": "romance title",
+        "cover": "ARTICLE COVER (IMAGE LINK)",
+        "readTime": {
+            "value": 4,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jerry Doe",
+            "avatar": "https://ui-avatars.com/api/?name=Jerry Doe"
+        },
+        "content": "HTML",
+        "createdAt": "2023-03-01T16:00:54.579Z",
+        "updatedAt": "2023-03-01T16:00:54.579Z",
+        "id": "73yt1zc9olepv7584"
+    }
+]
