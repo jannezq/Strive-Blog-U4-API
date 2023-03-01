@@ -29,30 +29,22 @@ const writeBlogPost = (blogPostArray) => {
 
 blogPostsRouter.post("/", (req, res, next) => {
   try {
-    const { category, title, cover, name } = req.body;
     const newBlogPost = {
-      id: uniqid(),
-      category,
-      title,
-      cover,
-      readTime: {
-        value: 2,
-        unit: "minute",
-      },
+      ...req.body,
       author: {
-        name,
-        avatar: `https://ui-avatars.com/api/?name=${name}`,
+        ...req.body.author,
+        avatar: `https://ui-avatars.com/api/?name=${req.body.name}`,
       },
-      content: "HTML",
       createdAt: new Date(),
       updatedAt: new Date(),
+      id: uniqid(),
     };
 
     const blogPostsArray = getBlogPosts();
     blogPostsArray.push(newBlogPost);
     writeBlogPost(blogPostsArray);
 
-    res.status(201).send({ postId: newBlogPost.id });
+    res.status(201).send({ id: newBlogPost.id });
   } catch (error) {
     next(500).send({ message: error.message });
   }
