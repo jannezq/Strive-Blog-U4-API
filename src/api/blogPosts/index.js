@@ -68,12 +68,11 @@ blogPostsRouter.get("/:blogPostId", (req, res, next) => {
     const blogPostArray = getBlogPosts();
 
     const foundBlogPost = blogPostArray.find(
-      (blog) => blog.id === req.params.blogPostId
+      (blogPost) => blogPost.id === req.params.blogPostId
     );
     if (foundBlogPost) {
       res.send(foundBlogPost);
     } else {
-      // the book has not been found, I'd like to trigger a 404 error
       next(
         createHttpError(404, `Book with id ${req.params.blogPostId} not found!`)
       ); // this jumps to the error handlers
@@ -82,8 +81,52 @@ blogPostsRouter.get("/:blogPostId", (req, res, next) => {
     next(error); // This error does not have a status code, it should trigger a 500
   }
 });
-blogPostsRouter.put("/");
 
-blogPostsRouter.delete("/");
+blogPostsRouter.put("/:blogPostId", (req, res, next) => {
+  try {
+    const blogsArray = getBlogPosts();
+
+    const index = blogsArray.findIndex(
+      (blogPost) => blogPost.id === req.params.blogPostId
+    );
+    if (index !== -1) {
+      const oldBlog = blogsArray[index];
+
+      const updatedBlog = { ...oldBlog, ...req.body, updatedAt: new Date() };
+
+      blogsArray[index] = updatedBlog;
+
+      writeBlogPost(blogsArray);
+
+      res.send(updatedBlog);
+    } else {
+      next(createHttpError(404, `Blog cannot be edited!`)); //
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogPostsRouter.delete("/:blogPostId", (req, res, next) => {
+  try {
+    const blogsArrays = getBlogPosts();
+    const remainingBlogPosts = blogsArrays.filter(
+      (b) => b.id !== req.params.blogPostId
+    );
+    if (blogsArrays.length !== remainingBlogPosts.length) {
+      writeBlogPost(remainingBlogPosts);
+      res.status(204).send();
+    } else {
+      next(
+        createHttpError(
+          404,
+          `Blog Post with the id (${req.params.blogPostId}) not found!`
+        )
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default blogPostsRouter;
