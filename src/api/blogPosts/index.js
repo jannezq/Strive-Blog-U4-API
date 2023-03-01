@@ -83,6 +83,7 @@ blogPostsRouter.get("/:blogPostId", (req, res, next) => {
   }
 });
 blogPostsRouter.put("/");
+
 blogPostsRouter.delete("/");
 
 export default blogPostsRouter;

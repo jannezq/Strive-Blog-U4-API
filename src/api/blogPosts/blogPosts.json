@@ -1,16 +1,1 @@
-{
-    "_id": "SERVER GENERATED ID",
-    "category": "ARTICLE CATEGORY",
-    "title": "ARTICLE TITLE",
-    "cover": "ARTICLE COVER (IMAGE LINK)",
-    "readTime": {
-        "value": 2,
-        "unit": "minute"
-    },
-    "author": {
-        "name": "AUTHOR AVATAR NAME",
-        "avatar": "AUTHOR AVATAR LINK"
-    },
-    "content": "HTML",
-    "createdAt": "NEW DATE"
-}
+[{"category":"crime","title":"Criminal Minds","cover":"ARTICLE COVER (IMAGE LINK)","readTime":{"value":4,"unit":"minute"},"author":{"name":"John Doe","avatar":"https://ui-avatars.com/api/?name=undefined"},"content":"HTML","createdAt":"2023-03-01T15:59:04.429Z","updatedAt":"2023-03-01T15:59:04.429Z","id":"73yt1zb6clepv4s8e"}]
