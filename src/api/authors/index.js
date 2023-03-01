@@ -1,4 +1,4 @@
-// *********************************************** BOOKS RELATED ENDPOINTS ******************************************
+// *********************************************** Authors RELATED ENDPOINTS ******************************************
 
 /* ************************************************* AUTHORS CRUD ENDPOINTS *******************************************
 1. CREATE --> POST http://localhost:300/authors/ (+ body)
@@ -13,6 +13,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import uniqid from "uniqid";
+import uiavatars from "ui-avatars";
 
 const authorsRouter = Express.Router();
 
@@ -25,11 +26,23 @@ const writeAuthors = (authorsArray) =>
   fs.writeFileSync(authorsJSONPath, JSON.stringify(authorsArray));
 
 authorsRouter.post("/", (req, res) => {
+  const avatarURL = uiavatars.generateAvatar({
+    uppercase: true,
+    name: req.body.name + req.body.surname,
+    background: "990000",
+    color: "000000",
+    fontsize: 0.5,
+    bold: true,
+    length: 2,
+    rounded: true,
+    size: 250,
+  });
   const newAuthor = {
     ...req.body,
-    id: uniqid(),
     createdAt: new Date(),
     updatedAt: new Date(),
+    avatar: avatarURL,
+    id: uniqid(),
   };
 
   const authorsArray = getAuthors();

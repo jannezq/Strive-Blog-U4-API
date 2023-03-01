@@ -1,22 +1,32 @@
 [
     {
-        "name": "John",
-        "surname": "Doe",
-        "email": "john@doemail.com",
-        "dob": "23/04/1975",
-        "avatar": "https://ui-avatars.com/api/?name=John+Doe",
-        "createdAt": "2023-02-28T14:51:10.990Z",
-        "updatedAt": "2023-02-28T14:51:10.990Z",
-        "id": "5ergwgckleod9mhb"
+        "name": "Jovellyn",
+        "surname": "Quiapos",
+        "email": "jovellynquiapos@strive.school",
+        "dateOfBirth": "01/01/1989",
+        "createdAt": "2021-05-18T11:29:14.005Z",
+        "updatedAt": "2021-05-18T11:29:32.489Z",
+        "avatar": "https://ui-avatars.com/api/?name=Jovellyn+Quiapos",
+        "id": "602ue1cakotyecye"
     },
     {
-        "name": "Jane",
-        "surname": "Doe",
-        "email": "jane@doemail.com",
-        "dob": "23/04/1985",
-        "avatar": "https://ui-avatars.com/api/?name=Jane+Doe",
-        "createdAt": "2023-02-28T14:58:15.803Z",
-        "updatedAt": "2023-02-28T14:58:15.803Z",
-        "id": "5ergwfd8leodiq9o"
+        "name": "EJ",
+        "surname": "Limpin",
+        "email": "ejlimpin@gmail.com",
+        "dateOfBirth": "18/04/1998",
+        "createdAt": "2023-03-01T13:40:51.640Z",
+        "updatedAt": "2023-03-01T13:40:51.640Z",
+        "avatar": "https://ui-avatars.com/api/?name=EJLimpin&background=990000&color=000000&size=250&font-size=0.5&length=2&rounded=true&bold=true&uppercase=true",
+        "id": "73yt1zdj0lepq71h5"
+    },
+    {
+        "name": "Apolloo",
+        "surname": "Rover",
+        "email": "appoloorover@gmail.com",
+        "dateOfBirth": "23/06/2003",
+        "createdAt": "2023-03-01T13:44:22.604Z",
+        "updatedAt": "2023-03-01T13:44:22.604Z",
+        "avatar": "https://ui-avatars.com/api/?name=ApollooRover&background=990000&color=000000&size=250&font-size=0.5&length=2&rounded=true&bold=true&uppercase=true",
+        "id": "73yt1z9xklepqbk99"
     }
 ]
