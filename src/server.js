@@ -1,19 +1,46 @@
-// const express = require("express") OLD IMPORT SYNTAX
-import Express from "express"; // NEW IMPORT SYNTAX (We can use it only if we add "type": "module", to package.json)
-import cors from "cors";
+import Express from "express";
+// import cors from "cors";
 import listEndpoints from "express-list-endpoints";
 import authorsRouter from "./api/authors/index.js";
+import blogPostsRouter from "./api/blogPosts/index.js";
+// importing the errorHandler below~~~
+import {
+  badRequestHandler,
+  unauthorizedHandler,
+  notFoundHandler,
+  genericErrorHandler,
+} from "./errorHandlers.js";
 
 const server = Express();
 const port = 3001;
 
 // ******************************MIDDLEWARES***************************
-server.use(cors());
-server.use(Express.json()); // If you don't add this line BEFORE the endpoints all request bodies will be UNDEFINED!!!!!!!!!!!!!!!
+const loggerMiddleware = (req, res, next) => {
+  console.log(
+    `Request method ${req.method} -- url ${req.url} -- ${new Date()}`
+  );
+  req.user = "Jovellyn";
+  next(); // <<<<===== this is a next normal flow
+};
+
+const authenicationOfficerMiddleware = (req, res, next) => {
+  console.log("Checking if you are the correct user!");
+  if (req.user === "Jovellyn") {
+    console.log("Welcome Jovellyn!");
+    next();
+  } else {
+    res.status(401).send({ message: "Sorry you are not the correct user!" });
+  }
+};
+
+server.use(loggerMiddleware); //<<<----- global middleware
+server.use(authenicationOfficerMiddleware);
+server.use(Express.json()); // If you don't add this line BEFORE the endpoints all request bodies will be UNDEFINED!!!!!!!!!!!!!!! <<<< this is also a middlewares
 
 // ************************** ENDPOINTS ***********************
 
 server.use("/authors", authorsRouter);
+server.use("/blogPosts", blogPostsRouter);
 
 server.listen(port, () => {
   console.table(listEndpoints(server));

@@ -53,7 +53,7 @@ authorsRouter.post("/", (req, res) => {
 });
 
 authorsRouter.get("/", (req, res) => {
-  console.log("REQ.QUERY:", req.query);
+  // console.log("REQ.QUERY:", req.query);
   const authors = getAuthors();
   if (req.query && req.query.category) {
     const filteredAuthors = authors.filter(
