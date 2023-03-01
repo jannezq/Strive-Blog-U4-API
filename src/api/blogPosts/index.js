@@ -13,7 +13,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import uniqid from "uniqid";
-import uiavatars from "ui-avatars";
+// import uiavatars from "ui-avatars";
 
 const blogPostsRouter = Express.Router();
 
@@ -51,10 +51,10 @@ blogPostsRouter.post("/", (req, res, next) => {
     const blogPostsArray = getBlogPosts();
     blogPostsArray.push(newBlogPost);
     writeBlogPost(blogPostsArray);
-    res.status(201).send({ id: newBlogPost.id });
-    next(createHttpError(500, `Book was not able to be created!`)); // this jumps to the error handlers
+
+    res.status(201).send({ postId: newBlogPost.id });
   } catch (error) {
-    next(error);
+    next(500).send({ message: error.message });
   }
 });
 

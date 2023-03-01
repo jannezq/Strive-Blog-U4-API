@@ -42,11 +42,13 @@ server.use(Express.json()); // If you don't add this line BEFORE the endpoints a
 server.use("/authors", authorsRouter);
 server.use("/blogPosts", blogPostsRouter);
 
+// ************************* ERROR HANDLERS *******************
+server.use(badRequestHandler); // 400
+server.use(unauthorizedHandler); // 401
+server.use(notFoundHandler); // 404
+server.use(genericErrorHandler); // 500 (this should ALWAYS be the last one)
+
 server.listen(port, () => {
   console.table(listEndpoints(server));
   console.log(`Server is running on port ${port}`);
 });
-
-server.on("error", (error) =>
-  console.lo(`Server is not running on port ${port} `)
-);
