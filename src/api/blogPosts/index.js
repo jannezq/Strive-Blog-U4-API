@@ -9,9 +9,16 @@
 */
 
 import Express from "express";
-import { getBlogPosts, writeBlogPost } from "../../library/fs-tools.js";
+import {
+  getBlogPosts,
+  writeBlogPost,
+  saveBlogPostAvatar,
+} from "../../library/fs-tools.js";
 import uniqid from "uniqid";
 // import uiavatars from "ui-avatars";
+import createHttpError from "http-errors";
+import multer from "multer";
+import { extname } from "path";
 
 const blogPostsRouter = Express.Router();
 
@@ -116,5 +123,24 @@ blogPostsRouter.delete("/:blogPostId", async (req, res, next) => {
     next(error);
   }
 });
+
+// uploading blog photo
+blogPostsRouter.post(
+  "/:blogPostId/uploadCover",
+  multer().single("cover"),
+  async (req, res, next) => {
+    try {
+      console.log("FILE: ", req.file);
+      console.log("FILE: ", req.body);
+      const originalFileExtension = extname(req.file.originalname); //this is to get the extension name of the file eg. ".jpg" or "png"
+      const fileName = req.params.blogPostId + originalFileExtension; // this is adding the authors ID as the name of the file with the extension type of the file
+      await saveBlogPostAvatar(fileName, req.file.buffer);
+
+      res.status(201).send({ message: "cover has been uploaded" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default blogPostsRouter;

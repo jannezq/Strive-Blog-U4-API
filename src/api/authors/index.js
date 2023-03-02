@@ -21,12 +21,13 @@ import { extname } from "path";
 
 const authorsRouter = Express.Router();
 
+//post new author
 authorsRouter.post("/", async (req, res) => {
   const newAuthor = {
     ...req.body,
     createdAt: new Date(),
     updatedAt: new Date(),
-    avatar: `https://ui-avatars.com/api/?name=${req.body.name}+${req.body.surname}`,
+    avatar: `http://localhost:3001/img/users/${req.body.name}+${req.body.surname}`,
     id: uniqid(),
   };
 
@@ -37,6 +38,7 @@ authorsRouter.post("/", async (req, res) => {
   res.status(201).send({ id: newAuthor.id });
 });
 
+//get specific category
 authorsRouter.get("/", async (req, res) => {
   // console.log("REQ.QUERY:", req.query);
   const authors = await getAuthors();
@@ -50,6 +52,7 @@ authorsRouter.get("/", async (req, res) => {
   }
 });
 
+//get specific author
 authorsRouter.get("/:authorId", async (req, res) => {
   const authorsArray = await getAuthors();
 
@@ -59,6 +62,7 @@ authorsRouter.get("/:authorId", async (req, res) => {
   res.send(foundAuthor);
 });
 
+//edit author
 authorsRouter.put("/:authorId", async (req, res) => {
   const authorsArray = await getAuthors();
 
@@ -77,6 +81,7 @@ authorsRouter.put("/:authorId", async (req, res) => {
   res.send(updatedAuthor);
 });
 
+//delete author
 authorsRouter.delete("/:authorId", async (req, res) => {
   const authorsArray = getAuthors();
 
@@ -89,6 +94,7 @@ authorsRouter.delete("/:authorId", async (req, res) => {
   res.status(204).send();
 });
 
+// uploading avatar photo
 authorsRouter.post(
   "/:authorId/uploadAvatar",
   multer().single("avatar"),
