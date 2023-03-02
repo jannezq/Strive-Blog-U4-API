@@ -10,7 +10,7 @@
 
 import Express from "express";
 import uniqid from "uniqid";
-import uiavatars from "ui-avatars";
+// import uiavatars from "ui-avatars";
 import {
   getAuthors,
   writeAuthors,
@@ -18,24 +18,28 @@ import {
 } from "../../library/fs-tools.js";
 import multer from "multer";
 import { extname } from "path";
+import createHttpError from "http-errors";
 
 const authorsRouter = Express.Router();
 
 //post new author
-authorsRouter.post("/", async (req, res) => {
-  const newAuthor = {
-    ...req.body,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    avatar: `http://localhost:3001/img/users/${req.body.name}+${req.body.surname}`,
-    id: uniqid(),
-  };
+authorsRouter.post("/", async (req, res, next) => {
+  try {
+    const newAuthor = {
+      ...req.body,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      id: uniqid(),
+    };
 
-  const authorsArray = await getAuthors();
-  authorsArray.push(newAuthor);
-  await writeAuthors(authorsArray);
+    const authorsArray = await getAuthors();
+    authorsArray.push(newAuthor);
+    await writeAuthors(authorsArray);
 
-  res.status(201).send({ id: newAuthor.id });
+    res.status(201).send({ id: newAuthor.id });
+  } catch (error) {
+    next(500).send({ message: error.message });
+  }
 });
 
 //get specific category
@@ -53,13 +57,23 @@ authorsRouter.get("/", async (req, res) => {
 });
 
 //get specific author
-authorsRouter.get("/:authorId", async (req, res) => {
-  const authorsArray = await getAuthors();
+authorsRouter.get("/:authorId", async (req, res, next) => {
+  try {
+    const authorsArray = await getAuthors();
 
-  const foundAuthor = authorsArray.find(
-    (author) => author.id === req.params.authorId
-  );
-  res.send(foundAuthor);
+    const foundAuthor = authorsArray.find(
+      (author) => author.id === req.params.authorId
+    );
+    if (foundAuthor) {
+      res.send(foundAuthor);
+    } else {
+      next(
+        createHttpError(404, `Blog with id ${req.params.authorId} not found!`)
+      ); // this jumps to the error handlers
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 //edit author
@@ -101,12 +115,26 @@ authorsRouter.post(
   async (req, res, next) => {
     try {
       console.log("FILE: ", req.file);
-      console.log("FILE: ", req.body);
       const originalFileExtension = extname(req.file.originalname); //this is to get the extension name of the file eg. ".jpg" or "png"
       const fileName = req.params.authorId + originalFileExtension; // this is adding the authors ID as the name of the file with the extension type of the file
       await saveAuthorsAvatar(fileName, req.file.buffer);
 
-      res.status(201).send({ message: "avatar has been uploaded" });
+      const authorsArray = await getAuthors();
+      const index = authorsArray.findIndex(
+        (author) => author.id === req.params.authorId
+      );
+      if (index !== -1) {
+        const oldAuthor = authorsArray[index];
+        const updatedAuthor = {
+          ...oldAuthor,
+          avatar: `http://localhost:3001/img/authors/${fileName}`,
+          updatedAt: new Date(),
+        };
+        authorsArray[index] = updatedAuthor;
+        await writeAuthors(authorsArray);
+
+        res.status(201).send({ message: "avatar has been uploaded" });
+      }
     } catch (error) {
       next(error);
     }

@@ -1,5 +1,5 @@
 import Express from "express";
-// import cors from "cors";
+import cors from "cors";
 import listEndpoints from "express-list-endpoints";
 import authorsRouter from "./api/authors/index.js";
 import blogPostsRouter from "./api/blogPosts/index.js";
@@ -35,6 +35,7 @@ const authenicationOfficerMiddleware = (req, res, next) => {
   }
 };
 
+server.use(cors());
 server.use(Express.static(publicFolderPath));
 server.use(loggerMiddleware); //<<<----- global middleware
 server.use(authenicationOfficerMiddleware);

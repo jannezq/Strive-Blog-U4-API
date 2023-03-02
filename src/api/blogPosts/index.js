@@ -19,10 +19,11 @@ import uniqid from "uniqid";
 import createHttpError from "http-errors";
 import multer from "multer";
 import { extname } from "path";
+import { checkBlogPostSchema } from "./validation.js";
 
 const blogPostsRouter = Express.Router();
 
-blogPostsRouter.post("/", async (req, res, next) => {
+blogPostsRouter.post("/", checkBlogPostSchema, async (req, res, next) => {
   try {
     const newBlogPost = {
       ...req.body,
@@ -69,7 +70,7 @@ blogPostsRouter.get("/:blogPostId", async (req, res, next) => {
       res.send(foundBlogPost);
     } else {
       next(
-        createHttpError(404, `Book with id ${req.params.blogPostId} not found!`)
+        createHttpError(404, `Blog with id ${req.params.blogPostId} not found!`)
       ); // this jumps to the error handlers
     }
   } catch (error) {
@@ -80,19 +81,14 @@ blogPostsRouter.get("/:blogPostId", async (req, res, next) => {
 blogPostsRouter.put("/:blogPostId", async (req, res, next) => {
   try {
     const blogsArray = await getBlogPosts();
-
     const index = blogsArray.findIndex(
       (blogPost) => blogPost.id === req.params.blogPostId
     );
     if (index !== -1) {
       const oldBlog = blogsArray[index];
-
       const updatedBlog = { ...oldBlog, ...req.body, updatedAt: new Date() };
-
       blogsArray[index] = updatedBlog;
-
       await writeBlogPost(blogsArray);
-
       res.send(updatedBlog);
     } else {
       next(createHttpError(404, `Blog cannot be edited!`)); //
@@ -136,11 +132,74 @@ blogPostsRouter.post(
       const fileName = req.params.blogPostId + originalFileExtension; // this is adding the authors ID as the name of the file with the extension type of the file
       await saveBlogPostAvatar(fileName, req.file.buffer);
 
+      const blogsArray = await getBlogPosts();
+      const index = blogsArray.findIndex(
+        (blogPost) => blogPost.id === req.params.blogPostId
+      );
+      if (index !== -1) {
+        const oldBlog = blogsArray[index];
+        const updatedBlog = {
+          ...oldBlog,
+          cover: `http://localhost:3001/img/blogPosts/${fileName}`,
+          updatedAt: new Date(),
+        };
+        blogsArray[index] = updatedBlog;
+        await writeBlogPost(blogsArray);
+        res.send(updatedBlog);
+      } else {
+        next(createHttpError(404, `Blog cannot be edited!`)); //
+      }
+
       res.status(201).send({ message: "cover has been uploaded" });
     } catch (error) {
       next(error);
     }
   }
 );
+
+// post comment
+blogPostsRouter.post("/:blogPostId/comments", async (req, res, next) => {
+  try {
+    const newComment = {
+      ...req.body,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      id: uniqid(),
+    };
+
+    const blogsArray = await getBlogPosts();
+    const index = blogsArray.findIndex(
+      (blogPost) => blogPost.id === req.params.blogPostId
+    );
+    const oldBlogPost = blogsArray[index];
+    oldBlogPost.comments.push(newComment);
+    blogsArray[index] = oldBlogPost;
+    await writeBlogPost(blogsArray);
+    res.status(201).send({ message: "comment has been submited" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+//get specific comment
+blogPostsRouter.get("/:blogPostId/comments", async (req, res, next) => {
+  try {
+    const blogPosts = await getBlogPosts();
+    const foundBlogPostComment = blogPosts.find(
+      (blog) => blog.id === req.params.blogPostId
+    );
+    if (foundBlogPostComment) {
+      res.send(foundBlogPostComment.comments);
+    } else
+      next(
+        createHttpError(
+          404,
+          `Blog Post with the id (${req.params.blogPostId}) not found!`
+        )
+      );
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default blogPostsRouter;
