@@ -10,11 +10,13 @@ import {
   notFoundHandler,
   genericErrorHandler,
 } from "./errorHandlers.js";
+import { join } from "path";
 
 const server = Express();
 const port = 3001;
+const publicFolderPath = join(process.cwd(), "./public");
 
-// ******************************MIDDLEWARES***************************
+// ******************************GLOBAL MIDDLEWARES***************************
 const loggerMiddleware = (req, res, next) => {
   console.log(
     `Request method ${req.method} -- url ${req.url} -- ${new Date()}`
@@ -33,6 +35,7 @@ const authenicationOfficerMiddleware = (req, res, next) => {
   }
 };
 
+server.use(Express.static(publicFolderPath));
 server.use(loggerMiddleware); //<<<----- global middleware
 server.use(authenicationOfficerMiddleware);
 server.use(Express.json()); // If you don't add this line BEFORE the endpoints all request bodies will be UNDEFINED!!!!!!!!!!!!!!! <<<< this is also a middlewares

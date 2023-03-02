@@ -11,27 +11,22 @@
 import Express from "express";
 import uniqid from "uniqid";
 import uiavatars from "ui-avatars";
-import { getAuthors, writeAuthors } from "../../library/fs-tools.js";
+import {
+  getAuthors,
+  writeAuthors,
+  saveAuthorsAvatar,
+} from "../../library/fs-tools.js";
+import multer from "multer";
+import { extname } from "path";
 
 const authorsRouter = Express.Router();
 
 authorsRouter.post("/", async (req, res) => {
-  const avatarURL = uiavatars.generateAvatar({
-    uppercase: true,
-    name: req.body.name + req.body.surname,
-    background: "990000",
-    color: "000000",
-    fontsize: 0.5,
-    bold: true,
-    length: 2,
-    rounded: true,
-    size: 250,
-  });
   const newAuthor = {
     ...req.body,
     createdAt: new Date(),
     updatedAt: new Date(),
-    avatar: avatarURL,
+    avatar: `https://ui-avatars.com/api/?name=${req.body.name}+${req.body.surname}`,
     id: uniqid(),
   };
 
@@ -93,5 +88,23 @@ authorsRouter.delete("/:authorId", async (req, res) => {
 
   res.status(204).send();
 });
+
+authorsRouter.post(
+  "/:authorId/uploadAvatar",
+  multer().single("avatar"),
+  async (req, res, next) => {
+    try {
+      console.log("FILE: ", req.file);
+      console.log("FILE: ", req.body);
+      const originalFileExtension = extname(req.file.originalname); //this is to get the extension name of the file eg. ".jpg" or "png"
+      const fileName = req.params.authorId + originalFileExtension; // this is adding the authors ID as the name of the file with the extension type of the file
+      await saveAuthorsAvatar(fileName, req.file.buffer);
+
+      res.status(201).send({ message: "avatar has been uploaded" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default authorsRouter;
